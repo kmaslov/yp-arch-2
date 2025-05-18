@@ -24,17 +24,17 @@ var httpClient = app.Services.GetRequiredService<IHttpClientFactory>().CreateCli
 
 app.Use(async (HttpContext context, Func<Task> next) =>
 {
-    var useNewService = true;
+    var useMoviesRoute = context.Request.Path.StartsWithSegments("/api/movies", StringComparison.OrdinalIgnoreCase);
 
-    if (gradualMigration)
+    if (useMoviesRoute && gradualMigration)
     {
         var random = new Random();
         var randomPercent = random.Next(0, 100);
 
-        useNewService = randomPercent < migrationPercent;
+        useMoviesRoute = randomPercent < migrationPercent;
     }
 
-    var targetUri = new Uri(useNewService ? moviesServiceUrl : monolithUrl);
+    var targetUri = new Uri(useMoviesRoute ? moviesServiceUrl : monolithUrl);
 
     var request = context.Request;
     var uri = new UriBuilder(request.GetEncodedUrl())
