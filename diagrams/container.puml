@@ -2,66 +2,66 @@
 
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-title КиноБездна - диаграмма контейнеров to-be
+title РљРёРЅРѕР‘РµР·РґРЅР° - РґРёР°РіСЂР°РјРјР° РєРѕРЅС‚РµР№РЅРµСЂРѕРІ to-be
 
-Person(user, "Пользователь", "Пользователь системы")
-System(system, "КиноБездна")
+Person(user, "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ", "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРёСЃС‚РµРјС‹")
+System(system, "РљРёРЅРѕР‘РµР·РґРЅР°")
 
-Container_Boundary(system, "КиноБездна") {
-  Container(ApiGateway, "API Gateway", "Единая точка вызова сервисов")
-  Container(AuthService, "Сервис аутентификации", "Go", "Осуществляет аутентификацию пользователей")
+Container_Boundary(system, "РљРёРЅРѕР‘РµР·РґРЅР°") {
+  Container(ApiGateway, "API Gateway", "Р•РґРёРЅР°СЏ С‚РѕС‡РєР° РІС‹Р·РѕРІР° СЃРµСЂРІРёСЃРѕРІ")
+  Container(AuthService, "РЎРµСЂРІРёСЃ Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёРё", "Go", "РћСЃСѓС‰РµСЃС‚РІР»СЏРµС‚ Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёСЋ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№")
   Boundary(Payment, "") {
-    Container(PaymentService, "Платежный сервис", "Go", "Управляет платежами пользователей")
+    Container(PaymentService, "РџР»Р°С‚РµР¶РЅС‹Р№ СЃРµСЂРІРёСЃ", "Go", "РЈРїСЂР°РІР»СЏРµС‚ РїР»Р°С‚РµР¶Р°РјРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№")
     ContainerDb(PaymentDb, "PG")
   }
   Boundary(Movie, "") {
-    Container(MovieService, "Сервис метаданных о фильмах", "Go", "Предоставляет метаданные о фильмах")
+    Container(MovieService, "РЎРµСЂРІРёСЃ РјРµС‚Р°РґР°РЅРЅС‹С… Рѕ С„РёР»СЊРјР°С…", "Go", "РџСЂРµРґРѕСЃС‚Р°РІР»СЏРµС‚ РјРµС‚Р°РґР°РЅРЅС‹Рµ Рѕ С„РёР»СЊРјР°С…")
     ContainerDb(MovieDb, "PG")
   }
   Boundary(UserManagement, "") {
-    Container(UserManagementService, "Сервис управления аккаунтом", "Go", "Отвечает за регистрацию, управление подписками")
+    Container(UserManagementService, "РЎРµСЂРІРёСЃ СѓРїСЂР°РІР»РµРЅРёСЏ Р°РєРєР°СѓРЅС‚РѕРј", "Go", "РћС‚РІРµС‡Р°РµС‚ Р·Р° СЂРµРіРёСЃС‚СЂР°С†РёСЋ, СѓРїСЂР°РІР»РµРЅРёРµ РїРѕРґРїРёСЃРєР°РјРё")
     ContainerDb(UserDb, "PG")
   }
   Boundary(UserContent, "") {
-    Container(UserContentService, "Сервис персонализации", "Go", "Отвечает за подборки, отслеживание просмотров и оценки пользователей")
+    Container(UserContentService, "РЎРµСЂРІРёСЃ РїРµСЂСЃРѕРЅР°Р»РёР·Р°С†РёРё", "Go", "РћС‚РІРµС‡Р°РµС‚ Р·Р° РїРѕРґР±РѕСЂРєРё, РѕС‚СЃР»РµР¶РёРІР°РЅРёРµ РїСЂРѕСЃРјРѕС‚СЂРѕРІ Рё РѕС†РµРЅРєРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№")
     ContainerQueue(RatingQueue, "Kafka")
     ContainerDb(UserContentDb, "PG")
   }
   Boundary(Viewing, "") {
-    Container(ViewingService, "Сервис просмотра фильмов", "Go", "Отвечает за просмотр фильмов")
+    Container(ViewingService, "РЎРµСЂРІРёСЃ РїСЂРѕСЃРјРѕС‚СЂР° С„РёР»СЊРјРѕРІ", "Go", "РћС‚РІРµС‡Р°РµС‚ Р·Р° РїСЂРѕСЃРјРѕС‚СЂ С„РёР»СЊРјРѕРІ")
     ContainerQueue(ViewQueue, "Kafka")
   }
-  ContainerDb(MediaStorage, "S3", "", "Хранение медиафайлов")
+  ContainerDb(MediaStorage, "S3", "", "РҐСЂР°РЅРµРЅРёРµ РјРµРґРёР°С„Р°Р№Р»РѕРІ")
 }
 
-System_Ext(streaming, "Онлайн-кинотеатры")
-System_Ext(payment, "Платежная система")
+System_Ext(streaming, "РћРЅР»Р°Р№РЅ-РєРёРЅРѕС‚РµР°С‚СЂС‹")
+System_Ext(payment, "РџР»Р°С‚РµР¶РЅР°СЏ СЃРёСЃС‚РµРјР°")
 
-System_Boundary(recommendationsSystem, "Внешняя рекомендательная\nсистема") {
-  System_Ext(recommendations, "Внешняя рекомендательная система")
+System_Boundary(recommendationsSystem, "Р’РЅРµС€РЅСЏСЏ СЂРµРєРѕРјРµРЅРґР°С‚РµР»СЊРЅР°СЏ\nСЃРёСЃС‚РµРјР°") {
+  System_Ext(recommendations, "Р’РЅРµС€РЅСЏСЏ СЂРµРєРѕРјРµРЅРґР°С‚РµР»СЊРЅР°СЏ СЃРёСЃС‚РµРјР°")
   SystemQueue_Ext(recommendationsQueue, "RabbitMQ")
 }
 
-Rel(user, ApiGateway, "Запросы через браузер, мобильное приложение, SmartTV")
-Rel(ApiGateway, AuthService, "Аутентификация")
-Rel(ApiGateway, MovieService, "Информация о фильмах")
-Rel(ApiGateway, UserManagementService, "Управление аккаунтом")
-Rel(ApiGateway, UserContentService, "Персонализация")
-Rel(ApiGateway, ViewingService, "Просмотр фильмов")
+Rel(user, ApiGateway, "Р—Р°РїСЂРѕСЃС‹ С‡РµСЂРµР· Р±СЂР°СѓР·РµСЂ, РјРѕР±РёР»СЊРЅРѕРµ РїСЂРёР»РѕР¶РµРЅРёРµ, SmartTV")
+Rel(ApiGateway, AuthService, "РђСѓС‚РµРЅС‚РёС„РёРєР°С†РёСЏ")
+Rel(ApiGateway, MovieService, "РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С„РёР»СЊРјР°С…")
+Rel(ApiGateway, UserManagementService, "РЈРїСЂР°РІР»РµРЅРёРµ Р°РєРєР°СѓРЅС‚РѕРј")
+Rel(ApiGateway, UserContentService, "РџРµСЂСЃРѕРЅР°Р»РёР·Р°С†РёСЏ")
+Rel(ApiGateway, ViewingService, "РџСЂРѕСЃРјРѕС‚СЂ С„РёР»СЊРјРѕРІ")
 BiRel(UserManagementService, PaymentService, "")
 Rel(UserManagementService, UserDb, "")
 Rel(MovieService, MovieDb, "")
-Rel(PaymentService, payment, "Проведение платежей")
-Rel(ViewingService, streaming, "Просмотр фильмов")
-Rel(ViewingService, ViewQueue, "Уведомления о просмотрах")
+Rel(PaymentService, payment, "РџСЂРѕРІРµРґРµРЅРёРµ РїР»Р°С‚РµР¶РµР№")
+Rel(ViewingService, streaming, "РџСЂРѕСЃРјРѕС‚СЂ С„РёР»СЊРјРѕРІ")
+Rel(ViewingService, ViewQueue, "РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РїСЂРѕСЃРјРѕС‚СЂР°С…")
 Rel(ViewQueue, UserContentService, "")
-Rel(ViewingService, UserManagementService, "Проверка доступности")
-Rel(UserContentService, RatingQueue, "Уведомления о новых оценках")
+Rel(ViewingService, UserManagementService, "РџСЂРѕРІРµСЂРєР° РґРѕСЃС‚СѓРїРЅРѕСЃС‚Рё")
+Rel(UserContentService, RatingQueue, "РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІС‹С… РѕС†РµРЅРєР°С…")
 Rel(UserContentService, UserContentDb, "")
-Rel(RatingQueue, MovieService, "Получение новых оценок для пересчета рейтингов")
-BiRel_L(UserContentService, recommendationsQueue, "Получение рекомендаций")
+Rel(RatingQueue, MovieService, "РџРѕР»СѓС‡РµРЅРёРµ РЅРѕРІС‹С… РѕС†РµРЅРѕРє РґР»СЏ РїРµСЂРµСЃС‡РµС‚Р° СЂРµР№С‚РёРЅРіРѕРІ")
+BiRel_L(UserContentService, recommendationsQueue, "РџРѕР»СѓС‡РµРЅРёРµ СЂРµРєРѕРјРµРЅРґР°С†РёР№")
 Rel(recommendations, recommendationsQueue, "")
-Rel(MovieService, MediaStorage, "Ссылки на медиафайлы")
+Rel(MovieService, MediaStorage, "РЎСЃС‹Р»РєРё РЅР° РјРµРґРёР°С„Р°Р№Р»С‹")
 Rel(PaymentService, PaymentDb, "")
 
 @enduml
