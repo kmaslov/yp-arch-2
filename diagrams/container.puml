@@ -1,0 +1,67 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title КиноБездна - диаграмма контейнеров to-be
+
+Person(user, "Пользователь", "Пользователь системы")
+System(system, "КиноБездна")
+
+Container_Boundary(system, "КиноБездна") {
+  Container(ApiGateway, "API Gateway", "Единая точка вызова сервисов")
+  Container(AuthService, "Сервис аутентификации", "Go", "Осуществляет аутентификацию пользователей")
+  Boundary(Payment, "") {
+    Container(PaymentService, "Платежный сервис", "Go", "Управляет платежами пользователей")
+    ContainerDb(PaymentDb, "PG")
+  }
+  Boundary(Movie, "") {
+    Container(MovieService, "Сервис метаданных о фильмах", "Go", "Предоставляет метаданные о фильмах")
+    ContainerDb(MovieDb, "PG")
+  }
+  Boundary(UserManagement, "") {
+    Container(UserManagementService, "Сервис управления аккаунтом", "Go", "Отвечает за регистрацию, управление подписками")
+    ContainerDb(UserDb, "PG")
+  }
+  Boundary(UserContent, "") {
+    Container(UserContentService, "Сервис персонализации", "Go", "Отвечает за подборки, отслеживание просмотров и оценки пользователей")
+    ContainerQueue(RatingQueue, "Kafka")
+    ContainerDb(UserContentDb, "PG")
+  }
+  Boundary(Viewing, "") {
+    Container(ViewingService, "Сервис просмотра фильмов", "Go", "Отвечает за просмотр фильмов")
+    ContainerQueue(ViewQueue, "Kafka")
+  }
+  ContainerDb(MediaStorage, "S3", "", "Хранение медиафайлов")
+}
+
+System_Ext(streaming, "Онлайн-кинотеатры")
+System_Ext(payment, "Платежная система")
+
+System_Boundary(recommendationsSystem, "Внешняя рекомендательная\nсистема") {
+  System_Ext(recommendations, "Внешняя рекомендательная система")
+  SystemQueue_Ext(recommendationsQueue, "RabbitMQ")
+}
+
+Rel(user, ApiGateway, "Запросы через браузер, мобильное приложение, SmartTV")
+Rel(ApiGateway, AuthService, "Аутентификация")
+Rel(ApiGateway, MovieService, "Информация о фильмах")
+Rel(ApiGateway, UserManagementService, "Управление аккаунтом")
+Rel(ApiGateway, UserContentService, "Персонализация")
+Rel(ApiGateway, ViewingService, "Просмотр фильмов")
+BiRel(UserManagementService, PaymentService, "")
+Rel(UserManagementService, UserDb, "")
+Rel(MovieService, MovieDb, "")
+Rel(PaymentService, payment, "Проведение платежей")
+Rel(ViewingService, streaming, "Просмотр фильмов")
+Rel(ViewingService, ViewQueue, "Уведомления о просмотрах")
+Rel(ViewQueue, UserContentService, "")
+Rel(ViewingService, UserManagementService, "Проверка доступности")
+Rel(UserContentService, RatingQueue, "Уведомления о новых оценках")
+Rel(UserContentService, UserContentDb, "")
+Rel(RatingQueue, MovieService, "Получение новых оценок для пересчета рейтингов")
+BiRel_L(UserContentService, recommendationsQueue, "Получение рекомендаций")
+Rel(recommendations, recommendationsQueue, "")
+Rel(MovieService, MediaStorage, "Ссылки на медиафайлы")
+Rel(PaymentService, PaymentDb, "")
+
+@enduml
